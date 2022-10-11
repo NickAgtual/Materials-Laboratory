@@ -1,0 +1,451 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>tensileTesting</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-11-30"><meta name="DC.source" content="tensileTesting.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Experimental Data</a></li><li><a href="#3">Force-Displacement Curve</a></li><li><a href="#4">Calculations</a></li><li><a href="#5">Stress-Strain Curve</a></li></ul></div><pre class="codeinput">clear; close <span class="string">all</span>;
+</pre><h2 id="2">Experimental Data</h2><pre class="codeinput"><span class="comment">% Aluminum</span>
+aluminum.LengthInitial = [25.24 25.57];
+aluminum.LengthFinal = [28.64 28.94];
+aluminum.WidthInitial = [6.35 6.36];
+aluminum.WidthFinal = [5.63 5.8];
+aluminum.ThicknessIntial = [2.55 2.53];
+aluminum.ThicknessFinal = [2.23 2.23];
+
+<span class="comment">% Steel</span>
+steel.LengthInitial = [25.57 25.82];
+steel.LengthFinal = [32.68 31.89];
+steel.WidthInitial = [6.48 6.45];
+steel.WidthFinal = [4.31 4.53];
+steel.ThicknessIntial = [2.5 2.55];
+steel.ThicknessFinal = [1.64 1.17];
+</pre><h2 id="3">Force-Displacement Curve</h2><pre class="codeinput"><span class="comment">% ----- Aluminum -----</span>
+
+<span class="comment">% -- Sample 1 --</span>
+<span class="comment">% Reading excel file and assigning variable for force data - aluminum sample 1</span>
+aluminum1Force = xlsread(<span class="string">'Tensile Test Results.xlsx'</span>, <span class="string">'ExperimentalData'</span>, <span class="string">'C12:C684'</span>);
+<span class="comment">% Reading excel file and assigning variable for displacement data - aluminum sample 1</span>
+aluminum1Displacement = xlsread(<span class="string">'Tensile Test Results.xlsx'</span>, <span class="string">'ExperimentalData'</span>, <span class="keyword">...</span>
+    <span class="string">'F12:F684'</span>);
+
+<span class="comment">% Creating new figure</span>
+figure(1);
+<span class="comment">% Allowing for mulptiple lines</span>
+hold <span class="string">on</span>;
+<span class="comment">% Turning grid on</span>
+grid <span class="string">on</span>;
+<span class="comment">% Setting y-axis limit</span>
+ylim([0 9500]);
+
+<span class="comment">% Plotting force-displacement curve for aluminum - sample 1</span>
+plot(aluminum1Displacement, aluminum1Force, <span class="string">'DisplayName'</span>, <span class="string">'Aluminum - Sample 1'</span>);
+
+<span class="comment">% -- Sample 2 --</span>
+<span class="comment">% Reading excel file and assigning variable for force data - aluminum sample 2</span>
+aluminum2Force = xlsread(<span class="string">'Tensile Test Results.xlsx'</span>, <span class="string">'ExperimentalData'</span>, <span class="string">'M12:M601'</span>);
+<span class="comment">% Reading excel file and assigning variable for displacement data - aluminum sample 2</span>
+aluminum2Displacement = xlsread(<span class="string">'Tensile Test Results.xlsx'</span>, <span class="string">'ExperimentalData'</span>, <span class="keyword">...</span>
+    <span class="string">'P12:P684'</span>);
+
+<span class="comment">% Plotting force-displacement curve for aluminum - sample 2</span>
+plot(aluminum2Displacement, aluminum2Force, <span class="string">'DisplayName'</span>, <span class="string">'Aluminum - Sample 2'</span>);
+
+<span class="comment">% ----- Steel -----</span>
+
+<span class="comment">% -- Sample 1 --</span>
+<span class="comment">% Reading excel file and assigning variable for force data - steel sample 1</span>
+steel1Force = xlsread(<span class="string">'Tensile Test Results.xlsx'</span>, <span class="string">'ExperimentalData'</span>, <span class="string">'W12:W1217'</span>);
+<span class="comment">% Reading excel file and assigning variable for force data - steel sample 1</span>
+steel1Displacement = xlsread(<span class="string">'Tensile Test Results.xlsx'</span>, <span class="string">'ExperimentalData'</span>, <span class="keyword">...</span>
+    <span class="string">'Z12:Z1217'</span>);
+<span class="comment">% Removing negative displacement values</span>
+steel1DisplacementL = steel1Displacement(1:270);
+<span class="comment">% Removing same element in force vector</span>
+steel1ForceL = steel1Force(1:270);
+
+<span class="comment">% Plotting force-displacement curve for steel - sample 1</span>
+plot(steel1Displacement, steel1Force, <span class="string">'DisplayName'</span>, <span class="string">'Steel - Sample 1'</span>);
+
+<span class="comment">% -- Sample 2 --</span>
+<span class="comment">% Reading excel file and assigning variable for force data - steel sample 2</span>
+steel2Force = xlsread(<span class="string">'Tensile Test Results.xlsx'</span>, <span class="string">'ExperimentalData'</span>, <span class="string">'AG12:AG1253'</span>);
+<span class="comment">% Reading excel file and assigning variable for force data - steel sample 2</span>
+steel2Displacement = xlsread(<span class="string">'Tensile Test Results.xlsx'</span>, <span class="string">'ExperimentalData'</span>, <span class="keyword">...</span>
+    <span class="string">'AJ12:AJ1253'</span>);
+<span class="comment">% Removing negative displacement values</span>
+steel2DisplacementL = steel2Displacement(1:270);
+<span class="comment">% Removing same element in force vector</span>
+steel2ForceL = steel2Force(1:270);
+
+<span class="comment">% Plotting force-displacement curve for steel - sample 2</span>
+plot(steel2Displacement, steel2Force, <span class="string">'DisplayName'</span>, <span class="string">'Steel - Sample 2'</span>);
+
+<span class="comment">% Axis Descriptors</span>
+xlabel(<span class="string">'\emph {Displacement (mm)}'</span>, <span class="keyword">...</span>
+    <span class="string">'fontsize'</span>, 14, <span class="string">'Interpreter'</span>, <span class="string">'latex'</span>);
+
+ylabel(<span class="string">'\emph {Force (N)}'</span>, <span class="string">'fontsize'</span>, 14, <span class="string">'Interpreter'</span>, <span class="string">'latex'</span>);
+
+title(<span class="string">'\emph {Force vs. Displacement}'</span>, <span class="string">'fontsize'</span>, 16, <span class="keyword">...</span>
+    <span class="string">'Interpreter'</span>, <span class="string">'latex'</span>);
+
+legend(<span class="string">'location'</span>, <span class="string">'northwest'</span>, <span class="string">'NumColumns'</span>, 2);
+</pre><img vspace="5" hspace="5" src="tensileTesting_01.png" alt=""> <h2 id="4">Calculations</h2><pre class="codeinput"><span class="comment">% -- Aluminum --</span>
+
+<span class="comment">% Area</span>
+aluminum.InitialArea = aluminum.WidthInitial .* aluminum.ThicknessIntial;
+
+<span class="comment">% Stress</span>
+aluminum.Stress1 = (aluminum1Force ./ aluminum.InitialArea(1))';
+aluminum.Stress2 = (aluminum2Force ./ aluminum.InitialArea(2))';
+
+<span class="comment">% Strain</span>
+aluminum.Strain1 = (aluminum1Displacement ./ aluminum.LengthInitial(1))';
+aluminum.Strain2 = (aluminum2Displacement ./ aluminum.LengthInitial(2))';
+
+<span class="comment">% -- Steel --</span>
+
+<span class="comment">% Area</span>
+steel.InitialArea = steel.WidthInitial .* steel.ThicknessIntial;
+
+<span class="comment">% Stress</span>
+steel.Stress1 = (steel1Force ./ steel.InitialArea(1))';
+steel.Stress2 = (steel2Force ./ steel.InitialArea(2))';
+
+<span class="comment">% Strain</span>
+steel.Strain1 = (steel1Displacement ./ steel.LengthInitial(1))';
+steel.Strain2 = (steel2Displacement ./ steel.LengthInitial(2))';
+</pre><h2 id="5">Stress-Strain Curve</h2><pre class="codeinput"><span class="comment">% ----- Aluminum -----</span>
+
+<span class="comment">% Creating new figure</span>
+figure(2);
+<span class="comment">% Allowing for multiple plots</span>
+hold <span class="string">on</span>;
+<span class="comment">% Turning grid on</span>
+grid <span class="string">on</span>;
+<span class="comment">% Setting y-axis limit</span>
+
+<span class="comment">% Plotting stress-strain curve for aluminum - sample 1</span>
+plot(aluminum.Strain1, aluminum.Stress1, <span class="string">'DisplayName'</span>, <span class="string">'Aluminum - Sample 1'</span>);
+
+<span class="comment">% Plotting stress-strain curve for aluminum - sample 2</span>
+plot(aluminum.Strain2, aluminum.Stress2, <span class="string">'DisplayName'</span>, <span class="string">'Aluminum - Sample 2'</span>);
+
+<span class="comment">% ----- Steel -----</span>
+
+<span class="comment">% Plotting stress-strain curve for steel - sample 1</span>
+plot(steel.Strain1, steel.Stress1, <span class="string">'DisplayName'</span>, <span class="string">'Steel - Sample 1'</span>);
+
+<span class="comment">% Plotting stress-strain curve for steel - sample 2</span>
+plot(steel.Strain2, steel.Stress2, <span class="string">'DisplayName'</span>, <span class="string">'Steel - Sample 2'</span>);
+
+<span class="comment">% Axis Descriptors</span>
+xlabel(<span class="string">'\emph {Strain ($${\frac{mm}{mm})}$$}'</span>, <span class="keyword">...</span>
+    <span class="string">'fontsize'</span>, 14, <span class="string">'Interpreter'</span>, <span class="string">'latex'</span>);
+
+ylabel(<span class="string">'\emph {Stress (MPa)}'</span>, <span class="string">'fontsize'</span>, 14, <span class="string">'Interpreter'</span>, <span class="string">'latex'</span>);
+
+title(<span class="string">'\emph {Stress vs. Strain}'</span>, <span class="string">'fontsize'</span>, 16, <span class="keyword">...</span>
+    <span class="string">'Interpreter'</span>, <span class="string">'latex'</span>);
+
+legend(<span class="string">'location'</span>, <span class="string">'northwest'</span>, <span class="string">'NumColumns'</span>, 2);
+
+<span class="comment">% Plot for linear Region</span>
+
+<span class="comment">% Creating new figure</span>
+figure(3);
+<span class="comment">% Allowing for multiple plots</span>
+hold <span class="string">on</span>;
+<span class="comment">% Turning grid on</span>
+grid <span class="string">on</span>;
+<span class="comment">% Setting y-axis limit</span>
+
+<span class="comment">% Plotting stress-strain curve for aluminum - sample 1</span>
+plot(aluminum.Strain1(1:220), aluminum.Stress1(1:220), <span class="string">'DisplayName'</span>, <span class="string">'Aluminum - Sample 1'</span>);
+
+<span class="comment">% Plotting stress-strain curve for aluminum - sample 2</span>
+plot(aluminum.Strain2(1:175), aluminum.Stress2(1:175), <span class="string">'DisplayName'</span>, <span class="string">'Aluminum - Sample 2'</span>);
+
+<span class="comment">% ----- Steel -----</span>
+
+<span class="comment">% Plotting stress-strain curve for steel - sample 1</span>
+plot(steel.Strain1(1:250), steel.Stress1(1:250), <span class="string">'DisplayName'</span>, <span class="string">'Steel - Sample 1'</span>);
+
+<span class="comment">% Plotting stress-strain curve for steel - sample 2</span>
+plot(steel.Strain2(1:250), steel.Stress2(1:250), <span class="string">'DisplayName'</span>, <span class="string">'Steel - Sample 2'</span>);
+
+<span class="comment">% Axis Descriptors</span>
+xlabel(<span class="string">'\emph {Strain ($${\frac{mm}{mm})}$$}'</span>, <span class="keyword">...</span>
+    <span class="string">'fontsize'</span>, 14, <span class="string">'Interpreter'</span>, <span class="string">'latex'</span>);
+
+ylabel(<span class="string">'\emph {Stress (MPa)}'</span>, <span class="string">'fontsize'</span>, 14, <span class="string">'Interpreter'</span>, <span class="string">'latex'</span>);
+
+title(<span class="string">'\emph {Stress vs. Strain in Elastic Regime}'</span>, <span class="string">'fontsize'</span>, 16, <span class="keyword">...</span>
+    <span class="string">'Interpreter'</span>, <span class="string">'latex'</span>);
+
+legend(<span class="string">'location'</span>, <span class="string">'northwest'</span>, <span class="string">'NumColumns'</span>, 2);
+</pre><img vspace="5" hspace="5" src="tensileTesting_02.png" alt=""> <img vspace="5" hspace="5" src="tensileTesting_03.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear; close all;
+
+%% Experimental Data
+
+% Aluminum
+aluminum.LengthInitial = [25.24 25.57];
+aluminum.LengthFinal = [28.64 28.94];
+aluminum.WidthInitial = [6.35 6.36];
+aluminum.WidthFinal = [5.63 5.8];
+aluminum.ThicknessIntial = [2.55 2.53];
+aluminum.ThicknessFinal = [2.23 2.23];
+
+% Steel 
+steel.LengthInitial = [25.57 25.82];
+steel.LengthFinal = [32.68 31.89];
+steel.WidthInitial = [6.48 6.45];
+steel.WidthFinal = [4.31 4.53];
+steel.ThicknessIntial = [2.5 2.55];
+steel.ThicknessFinal = [1.64 1.17];
+
+%% Force-Displacement Curve
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- Aluminum REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+
+% REPLACE_WITH_DASH_DASH Sample 1 REPLACE_WITH_DASH_DASH
+% Reading excel file and assigning variable for force data - aluminum sample 1
+aluminum1Force = xlsread('Tensile Test Results.xlsx', 'ExperimentalData', 'C12:C684');
+% Reading excel file and assigning variable for displacement data - aluminum sample 1
+aluminum1Displacement = xlsread('Tensile Test Results.xlsx', 'ExperimentalData', ...
+    'F12:F684');
+
+% Creating new figure
+figure(1);
+% Allowing for mulptiple lines
+hold on;
+% Turning grid on
+grid on;
+% Setting y-axis limit
+ylim([0 9500]);
+
+% Plotting force-displacement curve for aluminum - sample 1
+plot(aluminum1Displacement, aluminum1Force, 'DisplayName', 'Aluminum - Sample 1');
+
+% REPLACE_WITH_DASH_DASH Sample 2 REPLACE_WITH_DASH_DASH
+% Reading excel file and assigning variable for force data - aluminum sample 2
+aluminum2Force = xlsread('Tensile Test Results.xlsx', 'ExperimentalData', 'M12:M601');
+% Reading excel file and assigning variable for displacement data - aluminum sample 2
+aluminum2Displacement = xlsread('Tensile Test Results.xlsx', 'ExperimentalData', ...
+    'P12:P684');
+
+% Plotting force-displacement curve for aluminum - sample 2
+plot(aluminum2Displacement, aluminum2Force, 'DisplayName', 'Aluminum - Sample 2');
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- Steel REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+
+% REPLACE_WITH_DASH_DASH Sample 1 REPLACE_WITH_DASH_DASH
+% Reading excel file and assigning variable for force data - steel sample 1
+steel1Force = xlsread('Tensile Test Results.xlsx', 'ExperimentalData', 'W12:W1217');
+% Reading excel file and assigning variable for force data - steel sample 1
+steel1Displacement = xlsread('Tensile Test Results.xlsx', 'ExperimentalData', ...
+    'Z12:Z1217');
+% Removing negative displacement values
+steel1DisplacementL = steel1Displacement(1:270);
+% Removing same element in force vector
+steel1ForceL = steel1Force(1:270);
+
+% Plotting force-displacement curve for steel - sample 1
+plot(steel1Displacement, steel1Force, 'DisplayName', 'Steel - Sample 1');
+
+% REPLACE_WITH_DASH_DASH Sample 2 REPLACE_WITH_DASH_DASH
+% Reading excel file and assigning variable for force data - steel sample 2
+steel2Force = xlsread('Tensile Test Results.xlsx', 'ExperimentalData', 'AG12:AG1253');
+% Reading excel file and assigning variable for force data - steel sample 2
+steel2Displacement = xlsread('Tensile Test Results.xlsx', 'ExperimentalData', ...
+    'AJ12:AJ1253');
+% Removing negative displacement values
+steel2DisplacementL = steel2Displacement(1:270);
+% Removing same element in force vector
+steel2ForceL = steel2Force(1:270);
+
+% Plotting force-displacement curve for steel - sample 2
+plot(steel2Displacement, steel2Force, 'DisplayName', 'Steel - Sample 2');
+
+% Axis Descriptors
+xlabel('\emph {Displacement (mm)}', ...
+    'fontsize', 14, 'Interpreter', 'latex');
+
+ylabel('\emph {Force (N)}', 'fontsize', 14, 'Interpreter', 'latex');
+
+title('\emph {Force vs. Displacement}', 'fontsize', 16, ...
+    'Interpreter', 'latex');
+
+legend('location', 'northwest', 'NumColumns', 2);
+
+%% Calculations
+
+% REPLACE_WITH_DASH_DASH Aluminum REPLACE_WITH_DASH_DASH
+
+% Area
+aluminum.InitialArea = aluminum.WidthInitial .* aluminum.ThicknessIntial;
+
+% Stress
+aluminum.Stress1 = (aluminum1Force ./ aluminum.InitialArea(1))';
+aluminum.Stress2 = (aluminum2Force ./ aluminum.InitialArea(2))';
+
+% Strain 
+aluminum.Strain1 = (aluminum1Displacement ./ aluminum.LengthInitial(1))';
+aluminum.Strain2 = (aluminum2Displacement ./ aluminum.LengthInitial(2))';
+
+% REPLACE_WITH_DASH_DASH Steel REPLACE_WITH_DASH_DASH
+
+% Area
+steel.InitialArea = steel.WidthInitial .* steel.ThicknessIntial;
+
+% Stress
+steel.Stress1 = (steel1Force ./ steel.InitialArea(1))';
+steel.Stress2 = (steel2Force ./ steel.InitialArea(2))';
+
+% Strain
+steel.Strain1 = (steel1Displacement ./ steel.LengthInitial(1))';
+steel.Strain2 = (steel2Displacement ./ steel.LengthInitial(2))';
+
+%% Stress-Strain Curve
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- Aluminum REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+
+% Creating new figure
+figure(2);
+% Allowing for multiple plots
+hold on;
+% Turning grid on
+grid on;
+% Setting y-axis limit
+
+% Plotting stress-strain curve for aluminum - sample 1
+plot(aluminum.Strain1, aluminum.Stress1, 'DisplayName', 'Aluminum - Sample 1');
+
+% Plotting stress-strain curve for aluminum - sample 2
+plot(aluminum.Strain2, aluminum.Stress2, 'DisplayName', 'Aluminum - Sample 2');
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- Steel REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+
+% Plotting stress-strain curve for steel - sample 1
+plot(steel.Strain1, steel.Stress1, 'DisplayName', 'Steel - Sample 1');
+
+% Plotting stress-strain curve for steel - sample 2
+plot(steel.Strain2, steel.Stress2, 'DisplayName', 'Steel - Sample 2');
+
+% Axis Descriptors
+xlabel('\emph {Strain ($${\frac{mm}{mm})}$$}', ...
+    'fontsize', 14, 'Interpreter', 'latex');
+
+ylabel('\emph {Stress (MPa)}', 'fontsize', 14, 'Interpreter', 'latex');
+
+title('\emph {Stress vs. Strain}', 'fontsize', 16, ...
+    'Interpreter', 'latex');
+
+legend('location', 'northwest', 'NumColumns', 2);
+
+% Plot for linear Region
+
+% Creating new figure
+figure(3);
+% Allowing for multiple plots
+hold on;
+% Turning grid on
+grid on;
+% Setting y-axis limit
+
+% Plotting stress-strain curve for aluminum - sample 1
+plot(aluminum.Strain1(1:220), aluminum.Stress1(1:220), 'DisplayName', 'Aluminum - Sample 1');
+
+% Plotting stress-strain curve for aluminum - sample 2
+plot(aluminum.Strain2(1:175), aluminum.Stress2(1:175), 'DisplayName', 'Aluminum - Sample 2');
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- Steel REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+
+% Plotting stress-strain curve for steel - sample 1
+plot(steel.Strain1(1:250), steel.Stress1(1:250), 'DisplayName', 'Steel - Sample 1');
+
+% Plotting stress-strain curve for steel - sample 2
+plot(steel.Strain2(1:250), steel.Stress2(1:250), 'DisplayName', 'Steel - Sample 2');
+
+% Axis Descriptors
+xlabel('\emph {Strain ($${\frac{mm}{mm})}$$}', ...
+    'fontsize', 14, 'Interpreter', 'latex');
+
+ylabel('\emph {Stress (MPa)}', 'fontsize', 14, 'Interpreter', 'latex');
+
+title('\emph {Stress vs. Strain in Elastic Regime}', 'fontsize', 16, ...
+    'Interpreter', 'latex');
+
+legend('location', 'northwest', 'NumColumns', 2);
+
+
+
+
+##### SOURCE END #####
+--></body></html>
